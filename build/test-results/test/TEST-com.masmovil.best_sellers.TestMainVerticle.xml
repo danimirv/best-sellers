@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.masmovil.best_sellers.TestMainVerticle" tests="1" skipped="0" failures="0" errors="0" timestamp="2020-08-03T07:42:43" hostname="GFI12400" time="0.234">
+  <properties/>
+  <testcase name="verticle_deployed" classname="com.masmovil.best_sellers.TestMainVerticle" time="0.234"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
