@@ -39,15 +39,15 @@ public class ItemRepository {
 		LOGGER.info("Entry top-ten list");
 		return pgClient.rxGetConnection().flatMapObservable(
 			conn -> conn.rxPrepare(getUpdateQuery(request.getUpdateTime()))
-				.flatMapObservable(preparedStatement -> preparedStatement.createStream(50).toObservable())).map(row -> {
-			return new Item(row.getInteger(ID)).withType(ItemType.valueOf(row.getString(TYPE)))
-				.withName(row.getString(NAME))
-				.withDescription(row.getString(DESCRIPTION)).withSoldUnits(row.getInteger(SOLD_UNITS))
-				.withLastUpdate(row.getLocalDateTime(LAST_UPDATE));
-			
-			/*return new Item(row.getInteger(ID), ItemType.valueOf(row.getString(TYPE)), row.getString(NAME),
-					row.getString(DESCRIPTION), row.getInteger(SOLD_UNITS), row.getLocalDateTime(LAST_UPDATE));*/
-		}).collect(ArrayList::new, ArrayList::add).map(JsonArray::new);
+				.flatMapObservable(preparedStatement -> preparedStatement.createStream(50).toObservable()))
+			.map(this::buildItemFromRow).collect(ArrayList::new, ArrayList::add).map(JsonArray::new);
+	}
+
+	private Item buildItemFromRow(io.vertx.reactivex.sqlclient.Row row) {
+		return Item.builder().withId(row.getInteger(ID)).withType(ItemType.valueOf(row.getString(TYPE)))
+			.withName(row.getString(NAME))
+			.withDescription(row.getString(DESCRIPTION)).withSoldUnits(row.getInteger(SOLD_UNITS))
+			.withLastUpdate(row.getLocalDateTime(LAST_UPDATE)).build();
 	}
 
 	private String getUpdateQuery(TopTenUpdate update) {

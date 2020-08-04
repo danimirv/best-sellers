@@ -13,101 +13,64 @@ public class Item {
 	private Integer soldUnits;
 	@JsonProperty("last_update")
 	private LocalDateTime lastUpdate;
-	
-	private Item() {}
 
-	public Item(Integer id) {
-		this.id = id;
-	}
-	
-	public Item withType(ItemType type) {
-		this.type = type;
-		return this;
-	}
-	
-	public Item withName(String name) {
-		this.name = name;
-		return this;
-	}
-	
-	public Item withDescription(String description) {
-		this.description = description;
-		return this;
-	}
-	
-	public Item withSoldUnits(Integer soldUnits) {
-		this.soldUnits = soldUnits;
-		return this;
-	}
-	
-	public Item withLastUpdate(LocalDateTime lastUpdate) {
-		this.lastUpdate = lastUpdate;
-		return this;
-	}
-		
-	public Item build() {
-		Item item = new Item();
-		item.id = this.id;
-		item.type = this.type;
-		item.name = this.name;
-		item.description = this.description;
-		item.soldUnits = this.soldUnits;
-		item.lastUpdate = this.lastUpdate;		
-		return item;
+	private Item(Builder builder) {
+		id = builder.id;
+		type = builder.type;
+		name = builder.name;
+		description = builder.description;
+		soldUnits = builder.soldUnits;
+		lastUpdate = builder.lastUpdate;
 	}
 
-	public Integer getId() {
-		return id;
+	public static Builder builder() {
+		return new Builder();
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+	public static final class Builder {
 
-	public ItemType getType() {
-		return type;
-	}
+		private Integer id;
+		private ItemType type;
+		private String name;
+		private String description;
+		private Integer soldUnits;
+		private LocalDateTime lastUpdate;
 
-	public void setType(ItemType type) {
-		this.type = type;
-	}
+		private Builder() {
+		}
 
-	public String getName() {
-		return name;
-	}
+		public Builder withId(Integer val) {
+			id = val;
+			return this;
+		}
 
-	public void setName(String name) {
-		this.name = name;
-	}
+		public Builder withType(ItemType val) {
+			type = val;
+			return this;
+		}
 
-	public String getDescription() {
-		return description;
-	}
+		public Builder withName(String val) {
+			name = val;
+			return this;
+		}
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+		public Builder withDescription(String val) {
+			description = val;
+			return this;
+		}
 
-	public Integer getSoldUnits() {
-		return soldUnits;
-	}
+		public Builder withSoldUnits(Integer val) {
+			soldUnits = val;
+			return this;
+		}
 
-	public void setSoldUnits(Integer soldUnits) {
-		this.soldUnits = soldUnits;
-	}
+		public Builder withLastUpdate(LocalDateTime val) {
+			lastUpdate = val;
+			return this;
+		}
 
-	public LocalDateTime getLastUpdate() {
-		return lastUpdate;
+		public Item build() {
+			return new Item(this);
+		}
 	}
-
-	public void setLastUpdate(LocalDateTime localDateTime) {
-		this.lastUpdate = localDateTime;
-	}
-
-	@Override
-	public String toString() {
-		return "Item [id=" + id + ", type=" + type + ", name=" + name + ", description=" + description + ", soldUnits="
-				+ soldUnits + ", lastUpdate=" + lastUpdate + "]";
-	}
-
 }

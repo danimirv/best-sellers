@@ -8,7 +8,6 @@ public class BestSellerRequest {
 	public TopTenUpdate updateTime;
 
 	public BestSellerRequest(TopTenUpdate updateTime) {
-		super();
 		this.updateTime = updateTime;
 	}
 
