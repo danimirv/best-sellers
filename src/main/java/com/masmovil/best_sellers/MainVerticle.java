@@ -32,11 +32,17 @@ public class MainVerticle extends AbstractVerticle {
 	private final Integer PORT = 8080;
 	private static final Logger LOGGER = LoggerFactory.getLogger(MainVerticle.class.getName());
 
-	private ObjectMapper mapper = new ObjectMapper();
+	private final ObjectMapper mapper;
 
-	private ItemRepository itemRepository;
+	private final ItemRepository itemRepository;
 
 	public MainVerticle() {
+	        this(new ItemRepository(), new ObjectMapper());
+	}
+
+	public MainVerticle(ItemRepository itemRepository, ObjectMapper mapper) {
+	        this.itemRepository = itemRepository;
+		this.mapper = mapper;
 	}
 
 	@Override
@@ -58,7 +64,6 @@ public class MainVerticle extends AbstractVerticle {
 	}
 
 	private void topTen(RoutingContext context) {
-		itemRepository = new ItemRepository();
 		try {
 			itemRepository.topTen(getRequest(context)).subscribe(asd -> {
 				context.response().putHeader("content-type", "application/json").end(Json.encodePrettily(asd));
