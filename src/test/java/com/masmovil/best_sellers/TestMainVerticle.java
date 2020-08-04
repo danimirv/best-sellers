@@ -38,7 +38,7 @@ public class TestMainVerticle {
 
 	@Mock
 	private ItemRepository itemRepository;
-	
+
 	private ObjectMapper mapper = new ObjectMapper();
 
 	@Before
@@ -61,9 +61,9 @@ public class TestMainVerticle {
 	}
 
 	private void givenTopTenItemsInfoWorks(BestSellerRequest bsr) throws JsonProcessingException {
-		
-		Item item = new Item(1);/*.with ItemType.EBOOK, "Lord of the rings", "Ebook lord of the rings", 5151,
-				LocalDateTime.now());*/
+
+		Item item = new Item(1).withType(ItemType.EBOOK).withDescription("Ebook lord of the ring")
+				.withName("Lord of the rings").withSoldUnits(5151).withLastUpdate(LocalDateTime.now());
 
 		String json = mapper.writeValueAsString(Arrays.asList(item));
 		when(itemRepository.topTen(bsr)).thenReturn(Single.just(new JsonArray(json)));
