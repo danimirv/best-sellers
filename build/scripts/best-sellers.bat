@@ -1,19 +1,3 @@
-@rem
-@rem Copyright 2015 the original author or authors.
-@rem
-@rem Licensed under the Apache License, Version 2.0 (the "License");
-@rem you may not use this file except in compliance with the License.
-@rem You may obtain a copy of the License at
-@rem
-@rem      https://www.apache.org/licenses/LICENSE-2.0
-@rem
-@rem Unless required by applicable law or agreed to in writing, software
-@rem distributed under the License is distributed on an "AS IS" BASIS,
-@rem WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-@rem See the License for the specific language governing permissions and
-@rem limitations under the License.
-@rem
-
 @if "%DEBUG%" == "" @echo off
 @rem ##########################################################################
 @rem
@@ -28,9 +12,6 @@ set DIRNAME=%~dp0
 if "%DIRNAME%" == "" set DIRNAME=.
 set APP_BASE_NAME=%~n0
 set APP_HOME=%DIRNAME%..
-
-@rem Resolve any "." and ".." in APP_HOME to make it shorter.
-for %%i in ("%APP_HOME%") do set APP_HOME=%%~fi
 
 @rem Add default JVM options here. You can also use JAVA_OPTS and BEST_SELLERS_OPTS to pass JVM options to this script.
 set DEFAULT_JVM_OPTS=
@@ -83,7 +64,6 @@ set CMD_LINE_ARGS=%*
 @rem Setup the command line
 
 set CLASSPATH=%APP_HOME%\lib\best-sellers-1.0.0-SNAPSHOT.jar;%APP_HOME%\lib\vertx-pg-client-3.9.2.jar;%APP_HOME%\lib\vertx-rx-java2-3.9.2.jar;%APP_HOME%\lib\vertx-web-3.9.2.jar;%APP_HOME%\lib\vertx-sql-client-3.9.2.jar;%APP_HOME%\lib\vertx-rx-gen-3.9.2.jar;%APP_HOME%\lib\vertx-web-common-3.9.2.jar;%APP_HOME%\lib\vertx-auth-common-3.9.2.jar;%APP_HOME%\lib\vertx-core-3.9.2.jar;%APP_HOME%\lib\rxjava-2.2.12.jar;%APP_HOME%\lib\reactive-streams-1.0.3.jar;%APP_HOME%\lib\vertx-bridge-common-3.9.2.jar;%APP_HOME%\lib\netty-handler-proxy-4.1.49.Final.jar;%APP_HOME%\lib\netty-codec-http2-4.1.49.Final.jar;%APP_HOME%\lib\netty-codec-http-4.1.49.Final.jar;%APP_HOME%\lib\netty-handler-4.1.49.Final.jar;%APP_HOME%\lib\netty-resolver-dns-4.1.49.Final.jar;%APP_HOME%\lib\netty-codec-socks-4.1.49.Final.jar;%APP_HOME%\lib\netty-codec-dns-4.1.49.Final.jar;%APP_HOME%\lib\netty-codec-4.1.49.Final.jar;%APP_HOME%\lib\netty-transport-4.1.49.Final.jar;%APP_HOME%\lib\netty-buffer-4.1.49.Final.jar;%APP_HOME%\lib\netty-resolver-4.1.49.Final.jar;%APP_HOME%\lib\netty-common-4.1.49.Final.jar;%APP_HOME%\lib\vertx-codegen-3.9.2.jar;%APP_HOME%\lib\jackson-databind-2.10.2.jar;%APP_HOME%\lib\jackson-core-2.10.2.jar;%APP_HOME%\lib\jackson-annotations-2.10.2.jar;%APP_HOME%\lib\mvel2-2.3.1.Final.jar
-
 
 @rem Execute best-sellers
 "%JAVA_EXE%" %DEFAULT_JVM_OPTS% %JAVA_OPTS% %BEST_SELLERS_OPTS%  -classpath "%CLASSPATH%" io.vertx.core.Launcher %CMD_LINE_ARGS%

@@ -9,26 +9,51 @@ public class Item {
 	private ItemType type;
 	private String name;
 	private String description;
-
 	@JsonProperty("sold_units")
 	private Integer soldUnits;
-
-	// @JsonIgnore
 	@JsonProperty("last_update")
 	private LocalDateTime lastUpdate;
+	
+	private Item() {}
 
-	public Item() {
-	}
-
-	public Item(Integer id, ItemType type, String name, String description, Integer soldUnits,
-			LocalDateTime lastUpdate) {
-		super();
+	public Item(Integer id) {
 		this.id = id;
+	}
+	
+	public Item withType(ItemType type) {
 		this.type = type;
+		return this;
+	}
+	
+	public Item withName(String name) {
 		this.name = name;
+		return this;
+	}
+	
+	public Item withDescription(String description) {
 		this.description = description;
+		return this;
+	}
+	
+	public Item withSoldUnits(Integer soldUnits) {
 		this.soldUnits = soldUnits;
+		return this;
+	}
+	
+	public Item withLastUpdate(LocalDateTime lastUpdate) {
 		this.lastUpdate = lastUpdate;
+		return this;
+	}
+		
+	public Item build() {
+		Item item = new Item();
+		item.id = this.id;
+		item.type = this.type;
+		item.name = this.name;
+		item.description = this.description;
+		item.soldUnits = this.soldUnits;
+		item.lastUpdate = this.lastUpdate;		
+		return item;
 	}
 
 	public Integer getId() {

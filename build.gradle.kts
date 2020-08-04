@@ -16,6 +16,10 @@ repositories {
 
 val vertxVersion = "3.9.2"
 val junitJupiterVersion = "5.6.0"
+val assertjVersion = "3.8.0"
+val mockitoVersion = "2.20.1"
+val junitVersion   = "4.12"
+
 
 val mainVerticleName = "com.masmovil.best_sellers.MainVerticle"
 val watchForChange = "src/**/*"
@@ -31,6 +35,10 @@ dependencies {
   implementation("io.vertx:vertx-web:$vertxVersion")
   implementation("io.vertx:vertx-pg-client:$vertxVersion")
   compile("io.vertx:vertx-pg-client:3.9.2") 
+  testCompile("org.mockito:mockito-all:1.10.19")  
+  testCompile("junit:junit:$junitVersion")
+  testCompile("org.assertj:assertj-core:$assertjVersion")
+  testCompile("org.mockito:mockito-core:$mockitoVersion")
   testImplementation("io.vertx:vertx-unit:$vertxVersion")
   testImplementation("junit:junit:4.13")
 }

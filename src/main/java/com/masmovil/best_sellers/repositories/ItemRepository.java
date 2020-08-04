@@ -12,9 +12,10 @@ import io.vertx.core.logging.LoggerFactory;
 
 import java.util.ArrayList;
 import com.masmovil.best_sellers.config.PostgreConfiguration;
+import com.masmovil.best_sellers.model.BestSellerRequest;
 import com.masmovil.best_sellers.model.Item;
 import com.masmovil.best_sellers.model.ItemType;
-import com.masmovil.best_sellers.model.TOP_TEN_UPDATE;
+import com.masmovil.best_sellers.model.TopTenUpdate;
 import com.masmovil.best_sellers.util.ItemUtil;
 
 public class ItemRepository {
@@ -31,27 +32,30 @@ public class ItemRepository {
 		this.pgClient = pgClient;
 	}
 
-	public Single<JsonArray> topTen(TOP_TEN_UPDATE update) {
+	public Single<JsonArray> topTen(BestSellerRequest request) {
 		LOGGER.info("Entry top-ten list");
 		Single<SqlConnection> connection = pgClient.rxGetConnection();
 		return connection.flatMapObservable(conn -> {
-			return conn.rxPrepare(getUpdateQuery(update)).flatMapObservable(preparedStatement -> {
+			return conn.rxPrepare(getUpdateQuery(request.getUpdateTime())).flatMapObservable(preparedStatement -> {
 				return preparedStatement.createStream(50).toObservable();
 			});
 		}).map(row -> {
-			return new Item(row.getInteger(ID), ItemType.valueOf(row.getString(TYPE)), row.getString(NAME),
-					row.getString(DESCRIPTION), row.getInteger(SOLD_UNITS), row.getLocalDateTime(LAST_UPDATE));
+			return new Item(row.getInteger(ID)).withType(ItemType.valueOf(row.getString(TYPE))).withName(row.getString(NAME))
+			.withDescription(row.getString(DESCRIPTION)).withSoldUnits(row.getInteger(SOLD_UNITS)).withLastUpdate(row.getLocalDateTime(LAST_UPDATE));
+			
+			/*return new Item(row.getInteger(ID), ItemType.valueOf(row.getString(TYPE)), row.getString(NAME),
+					row.getString(DESCRIPTION), row.getInteger(SOLD_UNITS), row.getLocalDateTime(LAST_UPDATE));*/
 		}).collect(ArrayList::new, (l, v) -> l.add(v)).map(asd -> {
 			return new JsonArray(asd);
 		});
 	}
 
-	private String getUpdateQuery(TOP_TEN_UPDATE update) {
-		if (update.equals(TOP_TEN_UPDATE.EACH_HOUR)) {
+	private String getUpdateQuery(TopTenUpdate update) {
+		if (TopTenUpdate.EACH_HOUR.equals(update)) {
 			return ItemUtil.TOP_TEN_UPDATE_EACH_HOUR_QUERY;
-		} else if (update.equals(TOP_TEN_UPDATE.ONCE_PER_DAY)) {
+		} else if (TopTenUpdate.ONCE_PER_DAY.equals(update)) {
 			return ItemUtil.TOP_TEN_UPDATE_ONCE_PER_DAY_QUERY;
-		} else if (update.equals(TOP_TEN_UPDATE.REAL_TIME)) {
+		} else if (TopTenUpdate.REAL_TIME.equals(update)) {
 			return ItemUtil.TOP_TEN_REAL_TIME_QUERY;
 		}
 		return ItemUtil.TOP_TEN_UPDATE_EACH_HOUR_QUERY;
