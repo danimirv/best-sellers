@@ -79,7 +79,7 @@ public class MainVerticle extends AbstractVerticle {
 				.end(Json.encode(new ErrorMessage("update_time cannot be resolved to a type")));
 	}
 
-	private BestSellerRequest getRequest(RoutingContext context) throws JsonProcessingException, JsonMappingException {
+	private BestSellerRequest getRequest(RoutingContext context) throws JsonProcessingException {
 		return mapper.readValue(context.getBodyAsString(), BestSellerRequest.class);
 	}
 
