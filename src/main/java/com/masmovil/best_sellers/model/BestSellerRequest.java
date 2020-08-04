@@ -7,9 +7,6 @@ public class BestSellerRequest {
 	@JsonProperty("update_time")
 	public TopTenUpdate updateTime;
 
-	public BestSellerRequest() {
-	}
-
 	public BestSellerRequest(TopTenUpdate updateTime) {
 		super();
 		this.updateTime = updateTime;
@@ -18,9 +15,4 @@ public class BestSellerRequest {
 	public TopTenUpdate getUpdateTime() {
 		return updateTime;
 	}
-
-	public void setUpdateTime(TopTenUpdate updateTime) {
-		this.updateTime = updateTime;
-	}
-
 }
