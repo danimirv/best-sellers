@@ -11,8 +11,6 @@ import com.masmovil.best_sellers.config.PostgreConfiguration;
 import com.masmovil.best_sellers.model.BestSellerRequest;
 import com.masmovil.best_sellers.model.Item;
 import com.masmovil.best_sellers.model.ItemType;
-import com.masmovil.best_sellers.model.TopTenUpdate;
-import com.masmovil.best_sellers.queries.ItemsQueries;
 import io.reactivex.Single;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.logging.Logger;
@@ -38,7 +36,7 @@ public class ItemRepository {
 	public Single<JsonArray> topTen(BestSellerRequest request) {
 		LOGGER.info("Entry top-ten list");
 		return pgClient.rxGetConnection().flatMapObservable(
-			conn -> conn.rxPrepare(getUpdateQuery(request.getUpdateTime()))
+			conn -> conn.rxPrepare(request.getUpdateTime().getItemsQuery())
 				.flatMapObservable(preparedStatement -> preparedStatement.createStream(50).toObservable()))
 			.map(this::buildItemFromRow).collect(ArrayList::new, ArrayList::add).map(JsonArray::new);
 	}
@@ -48,18 +46,5 @@ public class ItemRepository {
 			.withName(row.getString(NAME))
 			.withDescription(row.getString(DESCRIPTION)).withSoldUnits(row.getInteger(SOLD_UNITS))
 			.withLastUpdate(row.getLocalDateTime(LAST_UPDATE)).build();
-	}
-
-	private String getUpdateQuery(TopTenUpdate update) {
-		if (TopTenUpdate.EACH_HOUR.equals(update)) {
-			return ItemsQueries.TOP_TEN_UPDATE_EACH_HOUR_QUERY;
-		}
-		if (TopTenUpdate.ONCE_PER_DAY.equals(update)) {
-			return ItemsQueries.TOP_TEN_UPDATE_ONCE_PER_DAY_QUERY;
-		}
-		if (TopTenUpdate.REAL_TIME.equals(update)) {
-			return ItemsQueries.TOP_TEN_REAL_TIME_QUERY;
-		}
-		return ItemsQueries.TOP_TEN_UPDATE_EACH_HOUR_QUERY;
 	}
 }
