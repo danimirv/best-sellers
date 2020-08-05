@@ -48,6 +48,7 @@ public class Routing {
 				context.response().putHeader("content-type", "application/json").end(Json.encodePrettily(asd));
 			});
 		} catch (JsonProcessingException e) {
+			System.out.println(e.getLocalizedMessage());
 			LOGGER.error("Error getting request:", e.getMessage());
 			reponseErrorMessage(context);
 		}
