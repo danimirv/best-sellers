@@ -1,5 +1,15 @@
 package com.masmovil.best_sellers;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.masmovil.best_sellers.model.BestSellerRequest;
+import com.masmovil.best_sellers.model.Item;
+import com.masmovil.best_sellers.model.ItemType;
+import com.masmovil.best_sellers.model.TopTenUpdate;
+import com.masmovil.best_sellers.repositories.ItemRepository;
 import io.reactivex.Single;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
@@ -9,29 +19,16 @@ import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.RunTestOnContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.masmovil.best_sellers.model.BestSellerRequest;
-import com.masmovil.best_sellers.model.Item;
-import com.masmovil.best_sellers.model.ItemType;
-import com.masmovil.best_sellers.model.TopTenUpdate;
-import com.masmovil.best_sellers.repositories.ItemRepository;
 
 @RunWith(VertxUnitRunner.class)
 public class TestMainVerticle {
@@ -61,19 +58,19 @@ public class TestMainVerticle {
 		itemRepository = mock(ItemRepository.class);
 	}
 
-	//@Test
+	// @Test
 	public void verticle_deployed(TestContext testContext) throws Throwable {
 		Async async = testContext.async();
 		async.complete();
 	}
 
-	//@Test
+	// @Test
 	public void getTopTen_should_return_ok() throws JsonProcessingException {
 		BestSellerRequest bsr = new BestSellerRequest(TopTenUpdate.EACH_HOUR);
 		givenTopTenItemsInfoWorks(bsr);
 	}
 
-	//@Test
+	// @Test
 	public void testMyApplication(TestContext context) {
 		final Async async = context.async();
 		vertx.createHttpClient().getNow(port, "localhost", "/best-sellers/top-ten", response -> {
@@ -86,8 +83,8 @@ public class TestMainVerticle {
 
 	private void givenTopTenItemsInfoWorks(BestSellerRequest bsr) throws JsonProcessingException {
 
-		/*Item item = new Item(1).withType(ItemType.EBOOK).withDescription("Ebook lord of the ring")
-				.withName("Lord of the rings").withSoldUnits(5151).withLastUpdate(LocalDateTime.now());*/
+		Item item = Item.builder().withId(1).withType(ItemType.EBOOK).withDescription("Ebook lord of the ring")
+				.withName("Lord of the rings").withSoldUnits(5151).withLastUpdate(LocalDateTime.now()).build();
 
 		String json = mapper.writeValueAsString(Arrays.asList(""));
 		when(itemRepository.topTen(bsr)).thenReturn(Single.just(new JsonArray(json)));
