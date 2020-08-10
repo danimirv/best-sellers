@@ -25,8 +25,8 @@ public class ItemRepository {
 
 	private final PgPool pgClient;
 
-	public ItemRepository(Vertx vertx) {
-		this(PostgreConfiguration.init(vertx));
+	public ItemRepository() {
+		this(PostgreConfiguration.init(Vertx.vertx()));
 	}
 
 	public ItemRepository(PgPool pgClient) {
@@ -35,16 +35,15 @@ public class ItemRepository {
 
 	public Single<JsonArray> topTen(BestSellerRequest request) {
 		LOGGER.info("Entry top-ten list");
-		return pgClient.rxGetConnection().flatMapObservable(
-			conn -> conn.rxPrepare(request.getUpdateTime().getItemsQuery())
-				.flatMapObservable(preparedStatement -> preparedStatement.createStream(50).toObservable()))
-			.map(this::buildItemFromRow).collect(ArrayList::new, ArrayList::add).map(JsonArray::new);
+		return pgClient.rxGetConnection()
+				.flatMapObservable(conn -> conn.rxPrepare(request.getUpdateTime().getItemsQuery())
+						.flatMapObservable(preparedStatement -> preparedStatement.createStream(50).toObservable()))
+				.map(this::buildItemFromRow).collect(ArrayList::new, ArrayList::add).map(JsonArray::new);
 	}
 
 	private Item buildItemFromRow(io.vertx.reactivex.sqlclient.Row row) {
 		return Item.builder().withId(row.getInteger(ID)).withType(ItemType.valueOf(row.getString(TYPE)))
-			.withName(row.getString(NAME))
-			.withDescription(row.getString(DESCRIPTION)).withSoldUnits(row.getInteger(SOLD_UNITS))
-			.withLastUpdate(row.getLocalDateTime(LAST_UPDATE)).build();
+				.withName(row.getString(NAME)).withDescription(row.getString(DESCRIPTION))
+				.withSoldUnits(row.getInteger(SOLD_UNITS)).withLastUpdate(row.getLocalDateTime(LAST_UPDATE)).build();
 	}
 }

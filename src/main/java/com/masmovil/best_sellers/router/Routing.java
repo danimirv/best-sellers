@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.masmovil.best_sellers.model.BestSellerRequest;
 import com.masmovil.best_sellers.model.ErrorMessage;
+import com.masmovil.best_sellers.model.Item;
 import com.masmovil.best_sellers.repositories.ItemRepository;
 import io.reactivex.Single;
 import io.vertx.core.json.Json;
@@ -25,7 +26,7 @@ public class Routing {
 	private final ObjectMapper mapper;
 
 	public Routing(Vertx vertx) {
-		this(vertx, new ItemRepository(vertx), new ObjectMapper());
+		this(vertx, new ItemRepository(), new ObjectMapper());
 	}
 
 	public Routing(Vertx vertx, ItemRepository itemRepository, ObjectMapper mapper) {
@@ -37,12 +38,15 @@ public class Routing {
 	public Single<io.vertx.reactivex.ext.web.Router> createRouter() {
 		long bodyLimit = 1024;
 		io.vertx.reactivex.ext.web.Router router = io.vertx.reactivex.ext.web.Router.router(vertx);
+		router.post(ROOT).handler(BodyHandler.create().setBodyLimit(bodyLimit * bodyLimit));
 		router.post(TOP_TEN).handler(BodyHandler.create().setBodyLimit(bodyLimit * bodyLimit));
+		router.post(ROOT).handler(this::test);
 		router.post(TOP_TEN).handler(this::topTen);
 		return Single.just(router);
 	}
 
 	private void topTen(RoutingContext context) {
+		LOGGER.info("Entry topTen method");
 		try {
 			itemRepository.topTen(getRequest(context)).subscribe(asd -> {
 				context.response().putHeader("content-type", "application/json").end(Json.encodePrettily(asd));
@@ -54,14 +58,18 @@ public class Routing {
 		}
 	}
 
+	private void test(RoutingContext context) {
+		LOGGER.error("--->>> ENTRY TEST");
+		context.response().putHeader("content-type", "application/json").end("{\"message\":\"Hello\"}");
+	}
+
 	private void reponseErrorMessage(RoutingContext context) {
 		context.response().setStatusCode(400).putHeader("content-type", "application/json")
-			.end(Json.encode(new ErrorMessage("update_time cannot be resolved to a type")));
+				.end(Json.encode(new ErrorMessage("update_time cannot be resolved to a type")));
 	}
 
 	private BestSellerRequest getRequest(RoutingContext context) throws JsonProcessingException {
 		return mapper.readValue(context.getBodyAsString(), BestSellerRequest.class);
 	}
-
 
 }
