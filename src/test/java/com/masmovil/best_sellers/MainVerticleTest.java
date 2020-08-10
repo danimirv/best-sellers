@@ -64,8 +64,9 @@ public class MainVerticleTest extends MainVerticleTestFixtures {
 	public void getTopTenInfo_should_return_ok(TestContext context) throws JsonProcessingException {
 		Async async = context.async();
 		HttpClient client = vertx.createHttpClient();
-		client.post(port, "localhost", "/best-sellers/top-ten", response -> {
+		client.post(port, "localhost", "/best-sellers/top-ten", response -> {			
 			context.assertEquals(200, response.statusCode());
+			context.assertEquals(response.getHeader("content-type"), "application/json");
 			response.bodyHandler(body -> {
 				assertPropertyValues(context, body);
 				client.close();
@@ -82,6 +83,7 @@ public class MainVerticleTest extends MainVerticleTestFixtures {
 		HttpClient client = vertx.createHttpClient();
 		client.post(port, "localhost", "/best-sellers/top-ten", response -> {
 			context.assertEquals(400, response.statusCode());
+			context.assertEquals(response.getHeader("content-type"), "application/json");
 			response.bodyHandler(body -> {
 				context.assertTrue(body.toString().contains(getErrorMessage()));
 				client.close();
