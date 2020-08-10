@@ -22,6 +22,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.PostgreSQLContainer;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.masmovil.best_sellers.model.BestSellerRequest;
+import com.masmovil.best_sellers.model.TopTenUpdate;
+
 @RunWith(VertxUnitRunner.class)
 public class MainVerticleTest extends MainVerticleTestFixtures {
 
@@ -64,28 +68,20 @@ public class MainVerticleTest extends MainVerticleTestFixtures {
 		System.out.println("RESULT SET: " + resultSetInt);
 	}
 
-	/*
-	 * @Test public void testMyApplication(TestContext context) { final Async async
-	 * = context.async();
-	 * 
-	 * vertx.createHttpClient().getNow(port, host, "/best-sellers", response -> {
-	 * response.handler(body -> {
-	 * context.assertTrue(body.toString().contains(getTopTepItemList()));
-	 * async.complete(); }); }); }
-	 */
-
 	@Test
-	public void canGetHello(TestContext context) {
+	public void canGetHello(TestContext context) throws JsonProcessingException {
 		Async async = context.async();
 		HttpClient client = vertx.createHttpClient();
-		client.getNow(port, "localhost", "/best-sellers/top-ten", response -> {
+		client.post(port, "localhost", "/best-sellers/top-ten", response -> {
+			System.out.println(response.statusCode());
+			context.assertEquals(200, response.statusCode());
 			response.bodyHandler(body -> {
-				System.out.println("BODY ->>>> " + body.toString());
-				context.assertTrue(body.toString().contains("Hello"));
 				client.close();
 				async.complete();
 			});
-		});
+		}).putHeader("content-type", "application/json")
+				.end(MAPPER.writeValueAsString(new BestSellerRequest(TopTenUpdate.EACH_HOUR)));
+
 	}
 
 	@After

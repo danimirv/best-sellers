@@ -39,9 +39,9 @@ public class Routing {
 		long bodyLimit = 1024;
 		io.vertx.reactivex.ext.web.Router router = io.vertx.reactivex.ext.web.Router.router(vertx);
 		router.post(ROOT).handler(BodyHandler.create().setBodyLimit(bodyLimit * bodyLimit));
-		router.post(TOP_TEN).handler(BodyHandler.create().setBodyLimit(bodyLimit * bodyLimit));
 		router.post(ROOT).handler(this::test);
-		router.post(TOP_TEN).handler(this::topTen);
+		router.post(TOP_TEN).handler(BodyHandler.create().setBodyLimit(bodyLimit * bodyLimit));
+		router.post(TOP_TEN).handler(this::topTen);		
 		return Single.just(router);
 	}
 
@@ -69,6 +69,7 @@ public class Routing {
 	}
 
 	private BestSellerRequest getRequest(RoutingContext context) throws JsonProcessingException {
+		System.out.println("BODY AS STRING: " + context.getBodyAsString());
 		return mapper.readValue(context.getBodyAsString(), BestSellerRequest.class);
 	}
 
