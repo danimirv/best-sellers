@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.masmovil.best_sellers.model.BestSellerRequest;
 import com.masmovil.best_sellers.model.ErrorMessage;
-import com.masmovil.best_sellers.model.Item;
 import com.masmovil.best_sellers.repositories.ItemRepository;
 import io.reactivex.Single;
 import io.vertx.core.json.Json;
@@ -38,8 +37,6 @@ public class Routing {
 	public Single<io.vertx.reactivex.ext.web.Router> createRouter() {
 		long bodyLimit = 1024;
 		io.vertx.reactivex.ext.web.Router router = io.vertx.reactivex.ext.web.Router.router(vertx);
-		router.post(ROOT).handler(BodyHandler.create().setBodyLimit(bodyLimit * bodyLimit));
-		router.post(ROOT).handler(this::test);
 		router.post(TOP_TEN).handler(BodyHandler.create().setBodyLimit(bodyLimit * bodyLimit));
 		router.post(TOP_TEN).handler(this::topTen);		
 		return Single.just(router);
@@ -56,11 +53,6 @@ public class Routing {
 			LOGGER.error("Error getting request:", e.getMessage());
 			reponseErrorMessage(context);
 		}
-	}
-
-	private void test(RoutingContext context) {
-		LOGGER.error("--->>> ENTRY TEST");
-		context.response().putHeader("content-type", "application/json").end("{\"message\":\"Hello\"}");
 	}
 
 	private void reponseErrorMessage(RoutingContext context) {

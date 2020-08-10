@@ -47,7 +47,6 @@ public class MainVerticleTest extends MainVerticleTestFixtures {
 
 	@Before
 	public void before(TestContext testContext) throws IOException {
-		// vertx = rule.vertx();
 		ServerSocket socket = new ServerSocket(0);
 		port = socket.getLocalPort();
 		socket.close();
@@ -59,21 +58,13 @@ public class MainVerticleTest extends MainVerticleTestFixtures {
 		postgreSQLContainer = new PostgreSQLContainer();
 		postgreSQLContainer.withInitScript(INIT_SCRIPT_PATH);
 		postgreSQLContainer.start();
-	}
+	}	
 
 	@Test
-	public void verticle_deployed(TestContext testContext) throws Throwable {
-		ResultSet resultSet = performQuery(postgreSQLContainer, "SELECT * from item");
-		String resultSetInt = resultSet.getString(6);
-		System.out.println("RESULT SET: " + resultSetInt);
-	}
-
-	@Test
-	public void canGetHello(TestContext context) throws JsonProcessingException {
+	public void getTopTenInfo_should_return_ok(TestContext context) throws JsonProcessingException {
 		Async async = context.async();
 		HttpClient client = vertx.createHttpClient();
 		client.post(port, "localhost", "/best-sellers/top-ten", response -> {
-			System.out.println(response.statusCode());
 			context.assertEquals(200, response.statusCode());
 			response.bodyHandler(body -> {
 				client.close();
