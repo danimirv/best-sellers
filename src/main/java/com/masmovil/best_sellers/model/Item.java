@@ -5,12 +5,21 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Item {
 
+	@JsonProperty("id")
 	private Integer id;
+	
+	@JsonProperty("type")
 	private ItemType type;
+	
+	@JsonProperty("name")
 	private String name;
+	
+	@JsonProperty("description")
 	private String description;
+	
 	@JsonProperty("sold_units")
 	private Integer soldUnits;
+	
 	@JsonProperty("last_update")
 	private LocalDateTime lastUpdate;
 
@@ -73,4 +82,29 @@ public class Item {
 			return new Item(this);
 		}
 	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public ItemType getType() {
+		return type;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public Integer getSoldUnits() {
+		return soldUnits;
+	}
+
+	public LocalDateTime getLastUpdate() {
+		return lastUpdate;
+	}	
+	
 }

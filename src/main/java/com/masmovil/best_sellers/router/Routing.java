@@ -61,7 +61,6 @@ public class Routing {
 	}
 
 	private BestSellerRequest getRequest(RoutingContext context) throws JsonProcessingException {
-		System.out.println("BODY AS STRING: " + context.getBodyAsString());
 		return mapper.readValue(context.getBodyAsString(), BestSellerRequest.class);
 	}
 

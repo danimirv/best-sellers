@@ -2,6 +2,7 @@ package com.masmovil.best_sellers;
 
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
+import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
@@ -11,7 +12,6 @@ import io.vertx.ext.unit.junit.VertxUnitRunner;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.sql.ResultSet;
 
 import org.junit.After;
 import org.junit.Before;
@@ -58,7 +58,7 @@ public class MainVerticleTest extends MainVerticleTestFixtures {
 		postgreSQLContainer = new PostgreSQLContainer();
 		postgreSQLContainer.withInitScript(INIT_SCRIPT_PATH);
 		postgreSQLContainer.start();
-	}	
+	}
 
 	@Test
 	public void getTopTenInfo_should_return_ok(TestContext context) throws JsonProcessingException {
@@ -67,12 +67,45 @@ public class MainVerticleTest extends MainVerticleTestFixtures {
 		client.post(port, "localhost", "/best-sellers/top-ten", response -> {
 			context.assertEquals(200, response.statusCode());
 			response.bodyHandler(body -> {
+				assertPropertyValues(context, body);
 				client.close();
 				async.complete();
+
 			});
 		}).putHeader("content-type", "application/json")
 				.end(MAPPER.writeValueAsString(new BestSellerRequest(TopTenUpdate.EACH_HOUR)));
+	}
 
+	@Test
+	public void getTopTenInfo_should_return_ko(TestContext context) throws JsonProcessingException {
+		Async async = context.async();
+		HttpClient client = vertx.createHttpClient();
+		client.post(port, "localhost", "/best-sellers/top-ten", response -> {
+			context.assertEquals(400, response.statusCode());
+			response.bodyHandler(body -> {
+				context.assertTrue(body.toString().contains(getErrorMessage()));
+				client.close();
+				async.complete();
+			});
+		}).putHeader("content-type", "application/json").end(MAPPER.writeValueAsString(""));
+	}
+
+	private void assertPropertyValues(TestContext context, Buffer body) {
+
+		// Item 1 in TopTen
+		context.assertTrue(body.toString().contains(getTopTepItemList().get(0).getName()));
+		context.assertTrue(body.toString().contains(getTopTepItemList().get(0).getDescription()));
+		context.assertTrue(body.toString().contains(getTopTepItemList().get(0).getType().toString()));
+
+		// Item 2 in TopTen
+		context.assertTrue(body.toString().contains(getTopTepItemList().get(1).getName()));
+		context.assertTrue(body.toString().contains(getTopTepItemList().get(1).getDescription()));
+		context.assertTrue(body.toString().contains(getTopTepItemList().get(1).getType().toString()));
+
+		// Item 3 in TopTen
+		context.assertTrue(body.toString().contains(getTopTepItemList().get(2).getName()));
+		context.assertTrue(body.toString().contains(getTopTepItemList().get(2).getDescription()));
+		context.assertTrue(body.toString().contains(getTopTepItemList().get(2).getType().toString()));
 	}
 
 	@After
